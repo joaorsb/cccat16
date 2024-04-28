@@ -34,7 +34,7 @@ def account_passageiro_dict():
     return {
         "name": "João Batista",
         "email": "joaorsbatista@gmail.com",
-        "cpf": "28462393809",
+        "cpf": "09319249016",
         "car_plate": "",
         "is_passenger": True,
         "is_driver": False
