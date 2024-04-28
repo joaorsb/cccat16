@@ -1,49 +1,19 @@
-import json
-
-from fastapi import FastAPI
-from pydantic import BaseModel
-
-from src.application import Account
-from src.application.get_account import GetAccount
-from src.application.signup import Signup
-from src.resource.account_dao import AccountDAODatabase
-from src.resource.mailer_gateway import MailerGatewayMemory
+from src.application.use_case.get_account import GetAccount
+from src.application.use_case.signup import Signup
+from src.infra.gateway.mailer_gateway import MailerGatewayMemory
+from src.infra.repository.account_repository import AccountRepositoryDatabase
+from src.infra.http.fastapi_http_server import FastAPIAdapter, FastAPIResponse
+from src.infra.http.account_controller import AccountController
+from src.infra.database.database_connection import PostgresAdapter
 
 
-class AccountModel(BaseModel):
-    account_id: str | None = None
-    name: str
-    email: str
-    cpf: str
-    car_plate: str | None = None
-    is_passenger: bool | None = False
-    is_driver: bool | None = False
-
-
-app = FastAPI()
-
-
-@app.post("/signup")
-async def signup(account: AccountModel):
-    account_dao = AccountDAODatabase()
-    mailer = MailerGatewayMemory()
-    signup = Signup(account_dao, mailer)
-    saved = signup.execute(account)
-    return saved
-
-
-@app.get('/accounts/{accountId}')
-async def get_account(accountId):
-    account_dao = AccountDAODatabase()
-    get_account = GetAccount(account_dao)
-    account = Account(accountId, '', '', '', '', False, False)
-    found = get_account.execute(account)
-    account = Account(*found)
-    return {
-        'accountId': account.account_id,
-        'name': account.name,
-        'email': account.email,
-        'carPlate': account.car_plate,
-        'isDriver': account.is_driver,
-        'isPassenger': account.is_passenger,
-    }
+http_server = FastAPIAdapter()
+connection = PostgresAdapter()
+response = FastAPIResponse()
+account_repository = AccountRepositoryDatabase(connection)
+mailer_gateway = MailerGatewayMemory()
+signup = Signup(account_repository, mailer_gateway, response)
+get_account = GetAccount(account_repository, response)
+account_controller = AccountController(http_server, signup, get_account)
+http_server.register()
+app = http_server.app

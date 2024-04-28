@@ -1,6 +1,6 @@
 import pytest
 
-from src.application.validate_cpf import validate_cpf
+from src.domain.validate_cpf import validate_cpf
 
 
 @pytest.mark.parametrize('cpf', [

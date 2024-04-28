@@ -1,11 +1,11 @@
 from collections import namedtuple
 import random
 from uuid import uuid4
+from src.domain.account import AccountInputDTO
 
 import pytest
 
 Account = namedtuple('Account', ['account_id', 'name', 'email', 'cpf', 'car_plate', 'is_passenger', 'is_driver'])
-AccountSignup = namedtuple('AccountSignup', ['name', 'email', 'cpf', 'car_plate', 'is_passenger', 'is_driver'])
 
 
 @pytest.fixture
@@ -17,24 +17,34 @@ def account():
 
 @pytest.fixture
 def account_passageiro_falha():
-    return AccountSignup(
-        "John", f'john.doe.{random.random()}@gmail.com', "87748248800", None, True, False
-    )
+    account = AccountInputDTO()
+    account.name = "John"
+    account.email = f'john.doe.{random.random()}@gmail.com'
+    account.cpf = "87748248800"
+    account.car_plate = ""
+    account.is_passenger = True
+    account.is_driver = False
+    return account
 
 
 @pytest.fixture
 def account_passageiro():
-    return AccountSignup(
-        "John Doe", f'john.doe.{random.random()}@gmail.com', "87748248800", None, True, False
-    )
+    account = AccountInputDTO()
+    account.name = "John Does"
+    account.email = f'john.doe.{random.random()}@gmail.com'
+    account.cpf = "87748248800"
+    account.car_plate = ""
+    account.is_passenger = True
+    account.is_driver = False
+    return account
 
 
 @pytest.fixture
 def account_passageiro_dict():
     return {
         "name": "João Batista",
-        "email": "joaorsbatista@gmail.com",
-        "cpf": "28462393809",
+        "email": f"joaorsbatista.{random.random()}@gmail.com",
+        "cpf": "09319249016",
         "car_plate": "",
         "is_passenger": True,
         "is_driver": False
@@ -43,16 +53,26 @@ def account_passageiro_dict():
 
 @pytest.fixture
 def account_motorista():
-    return AccountSignup(
-        "John Does", f'john.doe.{random.random()}@gmail.com', "87748248800", "BUO2434", False, True
-    )
+    account = AccountInputDTO()
+    account.name = "John Does"
+    account.email = f'john.doe.{random.random()}@gmail.com'
+    account.cpf = "87748248800"
+    account.car_plate = "BUO2434"
+    account.is_passenger = False
+    account.is_driver = True
+    return account
 
 
 @pytest.fixture
 def account_motorista_placa_invalida():
-    return AccountSignup(
-        "John Does", f'john.doe.{random.random()}@gmail.com', "87748248800", "BUO243", False, True
-    )
+    account = AccountInputDTO()
+    account.name = "John Does"
+    account.email = f'john.doe.{random.random()}@gmail.com'
+    account.cpf = "87748248800"
+    account.car_plate = "BUO243"
+    account.is_passenger = False
+    account.is_driver = True
+    return account
 
 
 @pytest.fixture
