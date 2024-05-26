@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 from typing import Union
 
-from src.domain.account import Account
+from src.domain.entity.account import Account
 from src.infra.database.database_connection import DatabaseConnection
 
 
